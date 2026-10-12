@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vahagn Shahnazaryan’s Gallery — Photography Portfolio</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-deep: #090d16;
+            --bg-card: rgba(22, 30, 49, 0.65);
+            --border-glow: rgba(56, 189, 248, 0.2);
+            --primary: #38bdf8;
+            --secondary: #818cf8;
+            --accent: #f43f5e;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .ambient-glow {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            filter: blur(140px);
+            z-index: -1;
+            opacity: 0.15;
+            pointer-events: none;
+        }
+        .glow-1 { top: -100px; left: -100px; background: var(--primary); }
+        .glow-2 { bottom: -100px; right: -100px; background: var(--secondary); }
+
+        header {
+            text-align: center;
+            padding: 80px 20px 40px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.8rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #ffffff 30%, #38bdf8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .photographer-credit {
+            font-size: 1.15rem;
+            color: var(--primary);
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .photographer-credit .highlight {
+            color: #ffffff;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 2px;
+        }
+
+        .header-subtext {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            font-weight: 300;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .controls-container {
+            max-width: 1200px;
+            margin: 0 auto 40px;
+            padding: 0 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 280px;
+            max-width: 400px;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 14px 20px 14px 50px;
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 30px;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            outline: none;
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.25);
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--text-muted);
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #090d16;
+            border-color: transparent;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 80px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            overflow: hidden;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            transition: var(--transition);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: var(--border-glow);
+            box-shadow: 0 25px 50px rgba(56, 189, 248, 0.15);
+        }
+
+        .card-img-wrapper {
+            width: 100%;
+            height: 260px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .card:hover .card-img-wrapper img {
+            transform: scale(1.08);
+        }
+
+        .category-tag {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(9, 13, 22, 0.75);
+            backdrop-filter: blur(8px);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: var(--primary);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            z-index: 2;
+        }
+
+        .card-content {
+            padding: 24px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .card-description {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 15px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .card-stats {
+            display: flex;
+            gap: 15px;
+        }
+
+        .card-stats span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .view-details {
+            color: var(--primary);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* LIGHTBOX MODAL */
+        .lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background-color: rgba(9, 13, 22, 0.92);
+            backdrop-filter: blur(16px);
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .lightbox.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .lightbox-content {
+            max-width: 1000px;
+            width: 100%;
+            background: #111827;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+            transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .lightbox.active .lightbox-content {
+            transform: scale(1);
+        }
+
+        .lightbox-img-container {
+            width: 100%;
+            max-height: 55vh;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .lightbox-img {
+            max-width: 100%;
+            max-height: 55vh;
+            object-fit: contain;
+        }
+
+        .lightbox-body {
+            padding: 30px;
+        }
+
+        .lightbox-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .lightbox-title {
+            font-size: 1.8rem;
+            font-family: 'Playfair Display', serif;
+            color: var(--text-main);
+        }
+
+        .lightbox-category {
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--primary);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .lightbox-desc {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        .metadata-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 15px 20px;
+            border-radius: 14px;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .meta-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .meta-value {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.4rem;
+            color: #ffffff;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.6);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+            z-index: 10;
+        }
+
+        .close-btn:hover {
+            background: var(--accent);
+            border-color: transparent;
+            transform: rotate(90deg);
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            display: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 2.6rem; }
+            .controls-container { flex-direction: column; align-items: stretch; }
+            .search-box { max-width: 100%; }
+            .gallery-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+
+    <header>
+        <h1>Vahagn’s Gallery</h1>
+        <p class="photographer-credit">Original Photography by <span class="highlight">Vahagn Shahnazaryan</span></p>
+        <p class="header-subtext">A curated visual portfolio showcasing nature, sacred sanctuaries, and iconic urban landscapes across Armenia and beyond.</p>
+    </header>
+
+    <div class="controls-container">
+        <!-- Live Search Bar -->
+        <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="searchInput" placeholder="Search photos by title or keyword..." onkeyup="filterGallery()">
+        </div>
+
+        <!-- Filter Buttons -->
+        <div class="filter-tabs">
+            <button class="filter-btn active" onclick="setCategory('all', this)">All Works</button>
+            <button class="filter-btn" onclick="setCategory('nature', this)">Nature</button>
+            <button class="filter-btn" onclick="setCategory('churches', this)">Churches</button>
+            <button class="filter-btn" onclick="setCategory('cities', this)">Cities</button>
+        </div>
+    </div>
+
+    <main class="container">
+        <div class="gallery-grid" id="galleryGrid">
+            
+            <!-- PHOTO 1 -->
+            <div class="card" data-category="nature" onclick="openLightbox('_DSF5280_2.jpg', 'Lake Sevan Shoreline Flora', 'Wildflowers blooming along the rugged rocky cliffs overlooking the breathtaking, high-altitude alpine waters of Lake Sevan under dramatic clouds.', 'Nature', 'Fujifilm', 'f/8.0', '1/400s', 'ISO 200')">
+                <div class="card-img-wrapper">
+                    <span class="category-tag">Nature</span>
+                    <img src="_DSF5280_2.jpg" alt="Lake Sevan Shoreline Flora">
+                </div>
+                <div class="card-content">
+                    <div>
+                        <h3 class="card-title">Lake Sevan Shoreline Flora</h3>
+                        <p class="card-description">Wildflowers blooming along the rugged rocky cliffs overlooking the breathtaking, high-altitude alpine waters of Lake Sevan under dramatic clouds.</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-stats">
+                            <span><i class="fa-regular fa-heart"></i> 54</span>
+                            <span><i class="fa-regular fa-eye"></i> 210</span>
+                        </div>
+                        <span class="view-details">Explore <i class="fa-solid fa-arrow-right-long"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PHOTO 2 -->
+            <div class="card" data-category="nature" onclick="openLightbox('DSCF0364.jpg', 'Highland Twilight Ridge', 'Golden hour light fading softly over rugged mountaintops and winding ridge trails across the Armenian highlands.', 'Nature', 'Fujifilm', 'f/5.6', '1/125s', 'ISO 160')">
+                <div class="card-img-wrapper">
+                    <span class="category-tag">Nature</span>
+                    <img src="DSCF0364.jpg" alt="Twilight Ridge">
+                </div>
+                <div class="card-content">
+                    <div>
+                        <h3 class="card-title">Highland Twilight Ridge</h3>
+                        <p class="card-description">Golden hour light fading softly over rugged mountaintops and winding ridge trails across the Armenian highlands.</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-stats">
+                            <span><i class="fa-regular fa-heart"></i> 68</span>
+                            <span><i class="fa-regular fa-eye"></i> 245</span>
+                        </div>
+                        <span class="view-details">Explore <i class="fa-solid fa-arrow-right-long"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PHOTO 3 -->
+            <div class="card" data-category="nature" onclick="openLightbox('DSCF0463-2.jpg', 'Emerald Mountain Valleys', 'Lush green forests rolling down into deep, dramatic mountain valleys with sunlight casting shadows across the rocky Armenian terrain.', 'Nature', 'Fujifilm', 'f/8.0', '1/250s', 'ISO 200')">
+                <div class="card-img-wrapper">
+                    <span class="category-tag">Nature</span>
+                    <img src="DSCF0463-2.jpg" alt="Emerald Valleys">
+                </div>
+                <div class="card-content">
+                    <div>
+                        <h3 class="card-title">Emerald Mountain Valleys</h3>
+                        <p class="card-description">Lush green forests rolling down into deep, dramatic mountain valleys with sunlight casting shadows across the rocky Armenian terrain.</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-stats">
+                            <span><i class="fa-regular fa-heart"></i> 82</span>
+                            <span><i class="fa-regular fa-eye"></i> 310</span>
+                        </div>
+                        <span class="view-details">Explore <i class="fa-solid fa-arrow-right-long"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PHOTO 4 -->
+            <div class="card" data-category="nature" onclick="openLightbox('DSCF0716_3.jpg', 'Lake Sevan Cloud Blanket', 'Low-hanging clouds rolling across the majestic mountain ranges bordering the vast azure expanse of Lake Sevan.', 'Nature', 'Fujifilm', 'f/9.0', '1/500s', 'ISO 100')">
+                <div class="card-img-wrapper">
+                    <span class="category-tag">Nature</span>
+                    <img src="DSCF0716_3.jpg" alt="Lake Sevan Cloud Blanket">
+                </div>
+                <div class="card-content">
+                    <div>
+                        <h3 class="card-title">Lake Sevan Cloud Blanket</h3>
+                        <p class="card-description">Low-hanging clouds rolling across the majestic mountain ranges bordering the vast azure expanse of Lake Sevan.</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-stats">
+                            <span><i class="fa-regular fa-heart"></i> 45</span>
+                            <span><i class="fa-regular fa-eye"></i> 185</span>
+                        </div>
+                        <span class="view-details">Explore <i class="fa-solid fa-arrow-right-long"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PHOTO 5 -->
+            <div class="card" data-category="churches" onclick="openLightbox('DSCF1473.jpg', 'Historic Sanctuary Stone Arches', 'Intricate medieval Armenian stone masonry and carved arches framing a pristine snow-covered winter mountain landscape.', 'Churches', 'Fujifilm', 'f/4.0', '1/320s', 'ISO 125')">
+                <div class="card-img-wrapper">
+                    <span class="category-tag">Churches</span>
+                    <img src="DSCF1473.jpg" alt="Historic Sanctuary Arches">
+                </div>
+                <div class="card-content">
+                    <div>
+                        <h3 class="card-title">Historic Sanctuary Arches</h3>
+                        <p class="card-description">Intricate medieval Armenian stone masonry and carved arches framing a pristine snow-covered winter mountain landscape.</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-stats">
+                            <span><i class="fa-regular fa-heart"></i> 95</span>
+                            <span><i class="fa-regular fa-eye"></i> 390</span>
+                        </div>
+                        <span class="view-details">Explore <i class="fa-solid fa-arrow-right-long"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PHOTO 6 -->
+            <div class="card" data-category="nature" onclick="openLightbox('DSCF1872_1.jpg', 'Winter Sun Over Frosted Hills', 'Bright winter sun casting a gentle glow over snow-dusted mountain ridges and frozen highlands.', 'Nature', 'Fujifilm', 'f/11', '1/1000s', 'ISO 100')">
+                <div class="card-img-wrapper">
+                    <span class="category-tag">Nature</span>
+                    <img src="DSCF1872_1.jpg" alt="Winter Sun Frosted Hills">
+                </div>
+                <div class="card-content">
+                    <div>
+                        <h3 class="card-title">Winter Sun Over Frosted Hills</h3>
+                        <p class="card-description">Bright winter sun casting a gentle glow over snow-dusted mountain ridges and frozen highlands.</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-stats">
+                            <span><i class="fa-regular fa-heart"></i> 60</span>
+                            <span><i class="fa-regular fa-eye"></i> 220</span>
+                        </div>
+                        <span class="view-details">Explore <i class="fa-solid fa-arrow-right-long"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PHOTO 7 -->
+            <div class="card" data-category="churches" onclick="openLightbox('Gandzasar edit December 8 2021-1.jpg', 'Gandzasar Monastery at Night', 'The 13th-century Gandzasar Monastery standing resiliently beneath a mesmerizing starry night sky and the Milky Way.', 'Churches', 'Fujifilm', 'f/2.8', '15s', 'ISO 1600')">
+                <div class="card-img-wrapper">
+                    <span class="category-tag">Churches</span>
+                    <img src="Gandzasar edit December 8 2021-1.jpg" alt="Gandzasar Monastery at Night">
+                </div>
+                <div class="card-content">
+                    <div>
+                        <h3 class="card-title">Gandzasar Monastery Under Milky Way</h3>
+                        <p class="card-description">The 13th-century Gandzasar Monastery standing resiliently beneath a mesmerizing starry night sky and the Milky Way.</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-stats">
+                            <span><i class="fa-regular fa-heart"></i> 142</span>
+                            <span><i class="fa-regular fa-eye"></i> 580</span>
+                        </div>
+                        <span class="view-details">Explore <i class="fa-solid fa-arrow-right-long"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PHOTO 8 -->
+            <div class="card" data-category="nature" onclick="openLightbox('DSCF2239.jpg', 'Lake Sevan Winter Wonderland', 'Frosted trees and snow-blanketed shores framing the calm, crystalline icy blue waters of Lake Sevan during winter.', 'Nature', 'Fujifilm', 'f/8.0', '1/400s', 'ISO 100')">
+                <div class="card-img-wrapper">
+                    <span class="category-tag">Nature</span>
+                    <img src="DSCF2239.jpg" alt="Lake Sevan Winter Wonderland">
+                </div>
+                <div class="card-content">
+                    <div>
+                        <h3 class="card-title">Lake Sevan Winter Wonderland</h3>
+                        <p class="card-description">Frosted trees and snow-blanketed shores framing the calm, crystalline icy blue waters of Lake Sevan during winter.</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-stats">
+                            <span><i class="fa-regular fa-heart"></i> 73</span>
+                            <span><i class="fa-regular fa-eye"></i> 275</span>
+                        </div>
+                        <span class="view-details">Explore <i class="fa-solid fa-arrow-right-long"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PHOTO 9 -->
+            <div class="card" data-category="cities" onclick="openLightbox('DSCF7664-1.jpg', 'Yerevan Skyline & Mount Ararat', 'The bustling capital city of Yerevan viewed from above, with the majestic twin peaks of Mount Ararat rising proudly in the background.', 'Cities', 'Fujifilm', 'f/8.0', '1/160s', 'ISO 200')">
+                <div class="card-img-wrapper">
+                    <span class="category-tag">Cities</span>
+                    <img src="DSCF7664-1.jpg" alt="Yerevan Skyline & Mount Ararat">
+                </div>
+                <div class="card-content">
+                    <div>
+                        <h3 class="card-title">Yerevan Skyline & Mount Ararat</h3>
+                        <p class="card-description">The bustling capital city of Yerevan viewed from above, with the majestic twin peaks of Mount Ararat rising proudly in the background.</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-stats">
+                            <span><i class="fa-regular fa-heart"></i> 118</span>
+                            <span><i class="fa-regular fa-eye"></i> 490</span>
+                        </div>
+                        <span class="view-details">Explore <i class="fa-solid fa-arrow-right-long"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PHOTO 10 -->
+            <div class="card" data-category="cities" onclick="openLightbox('DSCF2996-m1.jpg', 'Lower Manhattan & Brooklyn Bridge', 'Panoramas of Lower Manhattan financial district financial towers stretching across the East River waterfront with Brooklyn Bridge in view.', 'Cities', 'Fujifilm', 'f/8.0', '1/320s', 'ISO 160')">
+                <div class="card-img-wrapper">
+                    <span class="category-tag">Cities</span>
+                    <img src="DSCF2996-m1.jpg" alt="Lower Manhattan Waterfront">
+                </div>
+                <div class="card-content">
+                    <div>
+                        <h3 class="card-title">Lower Manhattan Waterfront</h3>
+                        <p class="card-description">Panoramas of Lower Manhattan financial district financial towers stretching across the East River waterfront with Brooklyn Bridge in view.</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-stats">
+                            <span><i class="fa-regular fa-heart"></i> 132</span>
+                            <span><i class="fa-regular fa-eye"></i> 510</span>
+                        </div>
+                        <span class="view-details">Explore <i class="fa-solid fa-arrow-right-long"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PHOTO 11 -->
+            <div class="card" data-category="cities" onclick="openLightbox('DSCF2791-m1.jpg', 'One World Trade Center in Fog', 'Dramatic low-angle view looking straight up at One World Trade Center and surrounding glass skyscrapers shrouded in low overcast clouds.', 'Cities', 'Fujifilm', 'f/5.6', '1/200s', 'ISO 200')">
+                <div class="card-img-wrapper">
+                    <span class="category-tag">Cities</span>
+                    <img src="DSCF2791-m1.jpg" alt="One World Trade Center Fog">
+                </div>
+                <div class="card-content">
+                    <div>
+                        <h3 class="card-title">One WTC Shrouded in Fog</h3>
+                        <p class="card-description">Dramatic low-angle view looking straight up at One World Trade Center and surrounding glass skyscrapers shrouded in low overcast clouds.</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-stats">
+                            <span><i class="fa-regular fa-heart"></i> 105</span>
+                            <span><i class="fa-regular fa-eye"></i> 430</span>
+                        </div>
+                        <span class="view-details">Explore <i class="fa-solid fa-arrow-right-long"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PHOTO 12 -->
+            <div class="card" data-category="cities" onclick="openLightbox('DSCF6568.jpg', 'Batumi Sunset Over Black Sea', 'A glowing golden sunset reflecting across the Black Sea, illuminating the modern coastal skyline, port, and high-rises of Batumi, Georgia.', 'Cities', 'Fujifilm', 'f/7.1', '1/500s', 'ISO 100')">
+                <div class="card-img-wrapper">
+                    <span class="category-tag">Cities</span>
+                    <img src="DSCF6568.jpg" alt="Batumi Sunset Black Sea">
+                </div>
+                <div class="card-content">
+                    <div>
+                        <h3 class="card-title">Batumi Sunset Over Black Sea</h3>
+                        <p class="card-description">A glowing golden sunset reflecting across the Black Sea, illuminating the modern coastal skyline, port, and high-rises of Batumi, Georgia.</p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-stats">
+                            <span><i class="fa-regular fa-heart"></i> 156</span>
+                            <span><i class="fa-regular fa-eye"></i> 620</span>
+                        </div>
+                        <span class="view-details">Explore <i class="fa-solid fa-arrow-right-long"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="no-results" id="noResults">
+                <i class="fa-regular fa-face-grimace" style="font-size: 2.5rem; margin-bottom: 10px; display: block;"></i>
+                No photographs found matching your search.
+            </div>
+
+        </div>
+    </main>
+
+    <!-- LIGHTBOX MODAL -->
+    <div class="lightbox" id="lightbox" onclick="closeLightboxOnBg(event)">
+        <div class="lightbox-content">
+            <span class="close-btn" onclick="closeLightbox()">&times;</span>
+            <div class="lightbox-img-container">
+                <img class="lightbox-img" id="lbImg" src="" alt="">
+            </div>
+            <div class="lightbox-body">
+                <div class="lightbox-header-row">
+                    <h2 class="lightbox-title" id="lbTitle"></h2>
+                    <span class="lightbox-category" id="lbCategory"></span>
+                </div>
+                <p class="lightbox-desc" id="lbDesc"></p>
+                <div class="metadata-grid">
+                    <div class="meta-item">
+                        <span class="meta-label">Camera</span>
+                        <span class="meta-value" id="lbCamera">-</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Aperture</span>
+                        <span class="meta-value" id="lbAperture">-</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Shutter Speed</span>
+                        <span class="meta-value" id="lbShutter">-</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">ISO</span>
+                        <span class="meta-value" id="lbIso">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Vahagn Shahnazaryan’s Gallery. All rights reserved.</p>
+    </footer>
+
+    <script>
+        let currentCategory = 'all';
+
+        function setCategory(category, btnElement) {
+            currentCategory = category;
+            
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+
+            filterGallery();
+        }
+
+        function filterGallery() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const title = card.querySelector('.card-title').innerText.toLowerCase();
+                const desc = card.querySelector('.card-description').innerText.toLowerCase();
+                const category = card.getAttribute('data-category');
+
+                const matchesCategory = (currentCategory === 'all' || category === currentCategory);
+                const matchesSearch = (title.includes(query) || desc.includes(query));
+
+                if (matchesCategory && matchesSearch) {
+                    card.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            const noResults = document.getElementById('noResults');
+            if (visibleCount === 0) {
+                noResults.style.display = 'block';
+            } else {
+                noResults.style.display = 'none';
+            }
+        }
+
+        function openLightbox(imgSrc, title, desc, category, camera, aperture, shutter, iso) {
+            document.getElementById('lbImg').src = imgSrc;
+            document.getElementById('lbTitle').innerText = title;
+            document.getElementById('lbDesc').innerText = desc;
+            document.getElementById('lbCategory').innerText = category;
+            document.getElementById('lbCamera').innerText = camera;
+            document.getElementById('lbAperture').innerText = aperture;
+            document.getElementById('lbShutter').innerText = shutter;
+            document.getElementById('lbIso').innerText = iso;
+
+            document.getElementById('lightbox').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function closeLightboxOnBg(event) {
+            if (event.target.id === 'lightbox') {
+                closeLightbox();
+            }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            }
+        });
+    </script>
+</body>
+</html>
